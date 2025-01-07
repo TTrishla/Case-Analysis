@@ -1,6 +1,6 @@
-## Grocery-Sales-Analysis
+# Grocery-Sales-Analysis
 
-# Business Use-Case
+## Business Use-Case
 
 Try to find ways to increase profit at the Kroger. I have decided to take the approach of looking at how well discounted goods are selling. I believe that discounted goods perform well among our customers because they are affordable for them.
 
@@ -9,7 +9,7 @@ My goal is to look for certain products and goods that aren’t selling well des
 There will be areas of weaknesses that I will have to address with the company. I will provide recommendations on how to improve our operations and to ultimately, maximize profits and consumer satisfaction
 
 
-# Analytics Approach 
+## Analytics Approach 
 
 Organizations are always looking for growth opportunities. Unfortunately this can be quite vague and I havee to interpret, identify, and provide my recommendation.  So where do we find growth opportunities? Few questions which i will be looking into 
 
@@ -21,5 +21,5 @@ Organizations are always looking for growth opportunities. Unfortunately this ca
 6. Are certain coupons or promotions more impactful than others?
 
 
-# Data
+## Data
 I will be  using the Complete Journey to answer my business problem. 
