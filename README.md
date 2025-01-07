@@ -12,10 +12,11 @@ There will be areas of weaknesses that I will have to address with the company. 
 ## Analytics Approach 
 
 Organizations are always looking for growth opportunities. Unfortunately this can be quite vague and I havee to interpret, identify, and provide my recommendation.  So where do we find growth opportunities? Few questions which i will be looking into 
-
 1. Top 10 product categories sold when they are discounted at more than 50%
-2. To understand the shopper behavior, I analyzed total sales volume for various vegetables which are not uniform on monthly basis based on age, household size, household composition and income and product type.
-3.I will check (positive or negative) where purchasing behavior is changing over time. Maybe sales volume is increasing for a particular product or customer segment and we could invest in marketing to hopefully compound this trend?
+2. To understand the shopper behavior, I analyzed total sales volume for various vegetables which are not uniform on monthly basis based on age, household size, household 
+   composition and income and product type.
+3. I will check (positive or negative) where purchasing behavior is changing over time. Maybe sales volume is increasing for a particular product or customer segment and we could 
+  invest in marketing to hopefully compound this trend?
 4. Do certain products tend to be purchased with other products on a regular basis?
 5. Do certain products have spikes on particular dates (i.e. holidays)?
 6. Are certain coupons or promotions more impactful than others?
