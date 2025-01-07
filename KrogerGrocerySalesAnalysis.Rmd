@@ -1,0 +1,182 @@
+```{r}
+library(dplyr)
+library(completejourney)
+library(ggplot2)
+library(stats4)
+library(readr)
+library(stringr)
+library(tidyverse)
+
+```
+
+# Table import
+
+```{r}
+transactions <- get_transactions()
+promotions <- get_promotions()
+products <- products
+demographics <- demographics
+
+transactions
+promotions
+products
+demographics
+```
+
+#After running some code on the data completejourney provided us, we found some interesting areas where Regork could look to increase revenue. Here are the top 10 products sold at greater than a 50% discount. We can see that chicken generates the most income for Regork. We think that TPOC (TOMATOES","ONIONS","CARROTS","POTATOES") are an essential part of cooking chicken recipes like soups,stews,chicken fry,etc and there could be opportunity to create more revenue from transactions involving any tomato products.
+
+```{r}
+idea<-transactions %>%
+  inner_join(products, by = "product_id") %>%
+  inner_join(demographics, by = "household_id") %>%
+  mutate(discount = retail_disc / (retail_disc + sales_value)) %>%
+  mutate(sellingprice = sales_value/ quantity) %>%
+  filter(discount > .50) %>%
+  group_by(product_category) 
+#glimpse(idea)
+
+
+  idea %>%
+  summarize(total_sales = sum(sales_value),total_quantity = sum(quantity),total_spend = sum(sellingprice)) %>%
+  arrange(desc(total_sales))
+```
+
+#On futher analysis we realised total sales is not uniform among these vegetables, carrots are selling the least and Tomatoes are selling the most at greater than 50% discount.So, if we club TPOC (TOMATOES","ONIONS","CARROTS","POTATOES") together and give discounts it will encourage the customers to shop these item togetehr at better rates.
+
+```{r}
+idea %>%   
+  filter(product_category %in% c("TOMATOES","ONIONS","CARROTS","POTATOES")) %>%
+   group_by(product_category) %>% 
+  
+   summarize(total_sales = sum(sales_value),total_quantity = sum(quantity),total_spend = sum(sellingprice)) %>%
+   arrange(desc(total_sales))
+
+```
+
+#To understand the shopper behaviour we are analysing combine sales volume for TPOC Month wise to understand shopper behaviour using sales data.It was interesting to see mar,aug,oct,dec have significantly less sales even after discount greater than 50%.
+
+```{r}
+idea %>%   
+  filter(product_category %in% c("TOMATOES","ONIONS","CARROTS","POTATOES","PEPPERS-ALL")) %>%
+  mutate(Transaction_date = date(transaction_timestamp)) %>%   
+  mutate(month = month(transaction_timestamp, label = TRUE)) %>% 
+  
+  group_by(month) %>%   
+  summarise(total_sales = sum(sales_value),total_spend = sum(sellingprice))
+```
+
+#We have done few more analysis based on Age,Household size, Household composition and income to understand the trend of shoppers categories which buy TPOC.
+
+```{r}
+#based on age shopper behaviour to buy these item 
+
+tomatoes_by_age <- transactions %>%   
+inner_join(products, by = "product_id") %>%   
+inner_join(demographics, by = "household_id") %>%   
+mutate(discount = retail_disc / (retail_disc + sales_value)) %>%   
+filter(discount > .50) %>%   
+filter(product_category %in% c("TOMATOES","ONIONS","CARROTS","POTATOES")) %>%   
+mutate(Transaction_date = date(transaction_timestamp)) %>%   
+mutate(month = month(transaction_timestamp, label = TRUE)) %>%   
+select(month, sales_value, age) %>%   group_by(age) %>%   
+summarise(total_sales = sum(sales_value)) %>%   
+arrange(desc(total_sales)) 
+
+tomatoes_by_age
+
+ggplot(tomatoes_by_age, aes(x = age, y = total_sales)) +   
+geom_bar(stat = "identity", fill = "blue") +   
+labs(title = "Total Sales of During Summer per Age Group",x = "Age Group", y = "Total Sales")
+
+
+```
+
+```{r}
+
+#Based on household size shopper behaviour 
+
+tomatoes_by_household_size <- transactions %>%   
+inner_join(products, by = "product_id") %>%   
+inner_join(demographics, by = "household_id") %>%   
+mutate(discount = retail_disc / (retail_disc + sales_value)) %>%   
+filter(discount > .50) %>%   
+filter(product_category %in% c("TOMATOES","ONIONS","CARROTS","POTATOES")) %>%   
+mutate(Transaction_date = date(transaction_timestamp)) %>%   
+mutate(month = month(transaction_timestamp, label = TRUE)) %>%   
+select(month, sales_value, household_size) %>%   group_by(household_size) %>%   
+summarise(total_sales = sum(sales_value)) %>%   
+arrange(desc(total_sales)) 
+
+tomatoes_by_household_size
+```
+
+```{r}
+
+tomatoes_by_household_comp <- transactions %>%   
+inner_join(products, by = "product_id") %>%   
+inner_join(demographics, by = "household_id") %>%   
+mutate(discount = retail_disc / (retail_disc + sales_value)) %>%   
+filter(discount > .50) %>%   
+filter(product_category %in% c("TOMATOES","ONIONS","CARROTS","POTATOES")) %>%   
+mutate(Transaction_date = date(transaction_timestamp)) %>%   
+mutate(month = month(transaction_timestamp, label = TRUE)) %>%   
+select(month, sales_value, household_comp) %>%   group_by(household_comp) %>%   
+summarise(total_sales = sum(sales_value)) %>%   
+arrange(desc(total_sales))
+
+tomatoes_by_household_comp
+
+```
+
+#Income Ranges of 35-49k and 50-74k are the two close leaders in purchasing tomato-related products when they're discounted over 50%.
+
+```{r}
+transactions %>%
+  inner_join(products, by = "product_id") %>%   
+  inner_join(demographics, by = "household_id") %>%   
+  mutate(discount = retail_disc / (retail_disc + sales_value)) %>%   
+  filter(discount > .50) %>%   
+  filter(product_category %in% c("TOMATOES","ONIONS","CARROTS","POTATOES")) %>%     
+  mutate(Transaction_date = date(transaction_timestamp)) %>%   
+  mutate(month = month(transaction_timestamp, label = TRUE)) %>%   
+  group_by(income) %>%   
+  summarise(total_sales = sum(sales_value)) %>%
+  arrange(desc(total_sales)) %>%
+  ggplot(aes(x = income, y = total_sales, fill = income)) + 
+  geom_col() +
+  labs(title = "Total Sales of Discounted Tomato Products by Income Group", x = "Income", y = "Total Sales", fill = "Income Group") +
+  theme(axis.text.x = element_text(angle = 30, hjust = 0.5, vjust = 0.5))
+```
+
+```{r}
+transactions %>%
+  inner_join(products, by = "product_id") %>%
+  inner_join(demographics, by = "household_id") %>%
+  mutate(discount = retail_disc / (retail_disc + sales_value)) %>%
+  filter(discount > .50) %>%
+  filter(product_category %in% c("TOMATOES","ONIONS","CARROTS","POTATOES")) %>% 
+  group_by(product_type) %>%
+  summarize(total_sales = sum(sales_value)) %>%
+  arrange(desc(total_sales))
+```
+
+#Based on the month wise sales ,we could see in the follwing months mar,aug,oct,dec have least sales for TPOC with greater than 50% discount. #Based on product wise sales,these products are not performing well even with greater than 50% discount. ONIONS RED (BULK&BAG)\
+ONIONS WHITE (BULK&BAG)\
+ONIONS YELLOW (BULK&BAG)\
+POTATOES RED (BULK&BAG)\
+TOMATOES CHERRY\
+ROMA TOMATOES (BULK/PKG) 
+#Based on Demographics information, we got #Age Range of 45-54 purchase the the most TPOC #Household size greater than 5 members is purchasing the least TPOC and household with 2 members buying the most. #Houses which have no kids with two adults are buying the most TPOC #Income Ranges of 35-49k and 50-74k are the two close leaders in purchasing TPOC #it shows us we should give more discount for married couple in the age bracket 45-54 without kids is the best shopper.
+
+\*\*Based on the trends on various factors mentioned above we have two recommendations for the CEO\*\*
+#Recommendation 1
+#Sales team should reach out to the brands that make the 
+ONIONS WHITE (BULK&BAG)\
+ONIONS YELLOW (BULK&BAG)\
+POTATOES RED (BULK&BAG)\
+TOMATOES CHERRY\
+ROMA TOMATOES (BULK/PKG)  
+#so if they could offer a better whole-sale price to hopefully sell more discounted tomatoes.
+
+#Recommendation 2
+# Marketing team should run few creative campaigns to sells TPOC as a combo in the mar,aug,oct,dec for a competitive price to improve  month wise revenue.
