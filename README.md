@@ -24,6 +24,7 @@ Organizations are always looking for growth opportunities. Unfortunately this ca
 
 ## Data
 I will be  using the Complete Journey to answer my business problem. 
+library(completejourney)
 
 ## Insights
 
