@@ -27,6 +27,8 @@ I will be  using the Complete Journey to answer my business problem.
 
 ## Insights
 
+### TPOC products items such as tomatoes, potatoes, onions, and carrots, we will be using TPOC as a new terminology in our Insight and recommendations.
+
 I have determined that chicken is our most significant best seller when discounted more than 50%. I considered other products that consumers may purchase along with the chicken and determined that tomatoes, potatoes, onions, and carrots are used a lot when cooking with chicken. It could prove beneficial to look for ways to increase sales of TPOC products.
 
 Below are the demographic groups leaders in purchasing TPOC Discounted Products at higher than 50%:
@@ -63,7 +65,7 @@ ROMA TOMATOES (BULK/PKG)
 They should see if the companies that make those products could offer better whole-sale rates if we purchase larger quantities. With more quantity of the products, we can sell more to our target demographics.
 
 ### Recommendation 2
-TPOC peducts items such as tomatoes, potatoes, onions, and carrots.
+
 
 To boost monthly revenue for TPOC products, it’s advisable for the marketing team to plan several innovative campaigns throughout the year in March, August, October, and December. These campaigns should offer TPOC products as enticing combos at competitive prices.
 
