@@ -1,0 +1,116 @@
+---
+---
+---
+
+## Initial Analysis
+
+```{r message=FALSE, warning=FALSE}
+#Required Packages
+library(completejourney)
+library(dplyr)
+library(lubridate)
+library(scales)
+library(ggplot2)
+```
+
+```{r message=FALSE, warning=FALSE}
+#Importing data sets needed for analysis
+transactions <- get_transactions()
+transactions
+products
+demographics
+```
+
+**Use case-1**
+
+**Top products sold based on product type and household size**
+
+```{r warning=FALSE}
+#Joining, mutating and cleaning data sets
+
+Trans_Prod_tbl <- transactions %>% 
+  inner_join(products, by = "product_id") %>% 
+  inner_join(demographics, by = "household_id" ) %>%
+   mutate(Transaction_date = date(transaction_timestamp))
+
+glimpse(Trans_Prod_tbl)  
+```
+
+```{r warning=FALSE}
+# filter Trans_Prod_tbl based on household size and product type 
+
+Prod_by_hld<- Trans_Prod_tbl %>%
+                        group_by(household_size,product_type) %>%
+                        summarize(total_sales = sum(sales_value, na.rm = TRUE)) %>% 
+                        arrange(desc(total_sales))%>%
+                        slice(1:10)
+
+#graphical representation
+
+ggplot(Prod_by_hld, aes(x = product_type, y = total_sales, fill = household_size)) +
+  geom_bar(stat = "identity") +
+  ylab("Total Sales") +
+  xlab("Product Type") +
+  theme(axis.text.x = element_text(size = 6, angle = 45, vjust = 1, hjust = 1))+
+   labs(title = "Sales of Top Products in each category based on Product Types and Household Size",
+       x = "Product Type",
+       y = "Total Sales",
+       fill = "Household Size") +
+    scale_y_continuous(name = "Total Sales", labels = scales::dollar)
+ 
+                        
+
+ 
+```
+
+**Use case - 2**
+
+**Total sales based on different Age group for each month**
+
+```{r warning=FALSE}
+Trans_Prod_tbl %>%
+  mutate(month = month(transaction_timestamp, label = TRUE)) %>%
+  group_by(month, age) %>%
+   summarize(total_sales = sum(sales_value, na.rm = FALSE)) %>%
+  
+#Graphical Representation 
+   ggplot(aes(x = month, y = total_sales, group = age, color = age, colour = "smooth")) +
+   #geom_point() +
+   geom_line(size=1.2) + 
+  scale_y_continuous(name = "Total Sales", labels = scales::dollar) +
+  labs(title = "Total Sales each month  by different Age Group",
+       subtitle = "Comparing the total sales of all products each month",
+       x = "Month",
+       y = "Total Sales",
+       color = "Age")
+
+```
+
+**Use Case - 3**
+
+**Total sales of top products under category "DRUG GM" (General medicine and household) purchased each month by families based on number of kids**
+
+```{r warning=FALSE}
+Prods_by_Num_Kids <- Trans_Prod_tbl %>%
+ filter(department == "DRUG GM") %>%
+ group_by(kids_count,product_type) %>%
+ mutate(month = month(transaction_timestamp, label = TRUE)) %>%
+ summarize(total_sales = sum(sales_value, na.rm = FALSE)) %>%
+ arrange(desc(total_sales)) %>%
+ slice(1:5) 
+#Graphical Representation 
+
+ ggplot(Prods_by_Num_Kids, aes(x = product_type, y = total_sales, fill = kids_count)) +
+  geom_bar(stat = "identity") +
+    ylab("Total Sales") +
+  xlab("Product Type ") +
+  theme(axis.text.x = element_text(size = 6, angle = 45, vjust = 1, hjust = 1))+
+   labs(title = "Sales of Top Product based on number of kids in each family ",
+        subtitle = "Camparing products under Drugs GM category for each month",
+       x = "Product Type",
+       y = "Total Sales",
+       fill = "Count of Kids")+
+    scale_y_continuous(name = "Total Sales", labels = scales::dollar)
+
+
+```
